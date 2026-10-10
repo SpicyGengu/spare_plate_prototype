@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StatusBar, Platform, StyleSheet } from "react-native";
 import RoleSelectScreen from "./src/screens/RoleSelectScreen";
 import PostScreen from "./src/screens/PostScreen";
 import FeedScreen from "./src/screens/FeedScreen";
@@ -17,5 +17,9 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "white" },
+  safeArea: {
+    flex: 1, 
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
 });
