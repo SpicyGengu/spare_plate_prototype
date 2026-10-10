@@ -63,20 +63,12 @@ export default function FeedScreen({ onBack }) {
               <Text style={styles.status}>status: {item.status}</Text>
 
               {item.status === "pending" && (
-                <View style={styles.actions}>
-                  <Pressable
-                    style={[styles.actionButton, styles.accept]}
-                    onPress={() => respond(item.id, "accepted")}
-                  >
-                    <Text style={styles.actionText}>Accept</Text>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.actionButton, styles.deny]}
-                    onPress={() => respond(item.id, "denied")}
-                  >
-                    <Text style={styles.actionText}>Deny</Text>
-                  </Pressable>
-                </View>
+                <Pressable
+                  style={styles.buyButton}
+                  onPress={() => respond(item.id, "accepted")}
+                >
+                  <Text style={styles.actionText}>Buy for ${item.price.toFixed(2)}</Text>
+                </Pressable>
               )}
             </View>
           </View>
@@ -105,4 +97,10 @@ const styles = StyleSheet.create({
   accept: { backgroundColor: "#1a7f37" },
   deny: { backgroundColor: "#b00020" },
   actionText: { color: "white", textAlign: "center", fontWeight: "600" },
+  buyButton: {
+    backgroundColor: "#1a7f37",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 8,
+  },
 });

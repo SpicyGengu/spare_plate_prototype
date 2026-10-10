@@ -17,6 +17,7 @@ export default function PostScreen({ onBack }) {
   const [selectedTags, setSelectedTags] = useState([]);
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [price, setPrice] = useState("");
 
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -44,6 +45,11 @@ export default function PostScreen({ onBack }) {
   const submit = async () => {
     if (!photo) return Alert.alert("Take a photo first.");
     if (!description.trim()) return Alert.alert("Add a short description.");
+    
+    const parsedPrice = parseFloat(price);
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      return Alert.alert("Enter a valid price.");
+    }
 
     setSubmitting(true);
     try {
@@ -54,6 +60,7 @@ export default function PostScreen({ onBack }) {
           photoBase64: `data:image/jpeg;base64,${photo.base64}`,
           dietaryTags: selectedTags,
           description: description.trim(),
+          price: parsedPrice,
         }),
       });
 
@@ -63,6 +70,7 @@ export default function PostScreen({ onBack }) {
       setPhoto(null);
       setSelectedTags([]);
       setDescription("");
+      setPrice("");
     } catch (err) {
       Alert.alert("Couldn't reach the server", String(err));
     } finally {
@@ -115,6 +123,15 @@ export default function PostScreen({ onBack }) {
         onChangeText={setDescription}
       />
 
+      <Text style={styles.label}>Price ($)</Text>
+      <TextInput
+        style={styles.priceInput}
+        keyboardType="decimal-pad"
+        placeholder="e.g. 4.50"
+        value={price}
+        onChangeText={setPrice}
+      />
+
       <Pressable style={styles.submitButton} onPress={submit} disabled={submitting}>
         <Text style={styles.submitText}>{submitting ? "Posting…" : "Post Listing"}</Text>
       </Pressable>
@@ -161,6 +178,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     marginTop: 12,
+  },
+  priceInput: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    padding: 12,
   },
   submitText: { color: "white", textAlign: "center", fontWeight: "700", fontSize: 16 },
 });

@@ -25,10 +25,13 @@ app.get("/listings", (req, res) => {
 
 // Phone 1 calls this when it submits a new listing.
 app.post("/listings", (req, res) => {
-  const { photoBase64, dietaryTags, description } = req.body;
+  const { photoBase64, dietaryTags, description, price } = req.body;
 
-  if (!photoBase64 || !description) {
-    return res.status(400).json({ error: "photoBase64 and description are required" });
+  const parsedPrice = Number(price);
+  if (!photoBase64 || !description || !Number.isFinite(parsedPrice) || parsedPrice < 0) {
+    return res
+      .status(400)
+      .json({ error: "photoBase64, description and a valid price are required" });
   }
 
   const listing = {
@@ -36,7 +39,8 @@ app.post("/listings", (req, res) => {
     photoBase64,
     dietaryTags: Array.isArray(dietaryTags) ? dietaryTags : [],
     description,
-    status: "pending", // "pending" | "accepted" | "denied"
+    price: parsedPrice,
+    status: "pending",
     createdAt: Date.now(),
   };
 
