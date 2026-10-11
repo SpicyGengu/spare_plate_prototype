@@ -1,12 +1,23 @@
-// Replace this with your laptop's LAN IP (find it with `ifconfig | grep inet`
-// inside your nix develop shell). Both phones and the laptop must be on the
-// same wifi network for this to work.
-export const SERVER_URL = "http://192.168.26.126:3000";
+import { Platform } from "react-native";
+import Constants from "expo-constants";
 
-export const DIETARY_TAGS = [
-  "Vegetarian",
-  "Vegan",
-  "Gluten-Free",
-  "Nut-Free",
-  "Dairy-Free",
-];
+const LAN_FALLBACK = "http://192.168.1.82:3000";
+
+function devHost() {
+  const hostUri =
+    Constants.expoConfig?.hostUri ||
+    Constants.expoGoConfig?.debuggerHost ||
+    "";
+  const host = String(hostUri).split(":")[0];
+  return host || null;
+}
+
+export function getServerUrl() {
+  if (process.env.EXPO_PUBLIC_SERVER_URL) return process.env.EXPO_PUBLIC_SERVER_URL;
+  if (Platform.OS === "web") return "http://localhost:3000";
+  const host = devHost();
+  if (host) return `http://${host}:3000`;
+  return LAN_FALLBACK;
+}
+
+export const SERVER_URL = getServerUrl();
